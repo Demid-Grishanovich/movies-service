@@ -3,6 +3,7 @@ package om.ticketbooking.movies_service.controller;
 import om.ticketbooking.movies_service.model.Movie;
 import om.ticketbooking.movies_service.repository.MovieRepository;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
 
@@ -17,7 +18,9 @@ public class MovieController {
     }
 
     @GetMapping
+    @Cacheable("movies")
     public List<Movie> getAllMovies() {
+        System.out.println("Fetching movies from DB..."); // для проверки
         return repository.findAll();
     }
 
@@ -35,4 +38,9 @@ public class MovieController {
     public String metrics() {
         return "Movies count: " + repository.count();
     }
+    @PostMapping
+    public Movie addMovie(@RequestBody Movie movie) {
+        return repository.save(movie);
+    }
+
 }
